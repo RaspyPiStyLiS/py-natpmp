@@ -14,7 +14,7 @@ def main():
         print("usage: natpmp-client.py [-u] [-l lifetime] [-g gateway_addr] [-i interface] public_port private_port")
         sys.exit(-1)
 
-    opts, args = getopt.getopt(sys.argv[1:], "ul:g:")    
+    opts, args = getopt.getopt(sys.argv[1:], "ul:g:i:")    
     public_port = int(args[0])
     private_port = int(args[1])
     protocol = NATPMP.NATPMP_PROTOCOL_TCP
