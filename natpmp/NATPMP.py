@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 import os
 import re
-import IN
 import struct
 import socket
 import select
@@ -298,7 +297,7 @@ def get_gateway_socket(interface, gateway):
     response_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     response_socket.setblocking(0)
     if interface is not None:
-        response_socket.setsockopt(socket.SOL_SOCKET, IN.SO_BINDTODEVICE, interface)
+        response_socket.setsockopt(socket.SOL_SOCKET, socket.SO_BINDTODEVICE, interface)
     response_socket.connect((gateway, NATPMP_PORT))
     return response_socket
 
