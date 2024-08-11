@@ -30,7 +30,7 @@ def main():
             lifetime = int(val)
         elif name == "-g":
             gateway = val
-        elif name == "-i"
+        elif name == "-i":
             interface = val
 
     if not gateway:
