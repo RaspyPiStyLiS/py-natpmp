@@ -284,7 +284,7 @@ def error_str(result_code):
     return result
 
 
-def get_gateway_socket(gateway):
+def get_gateway_socket(interface, gateway):
     """Takes a gateway address string and returns a non-blocking UDP
        socket to communicate with its NAT-PMP implementation on
        NATPMP_PORT.
@@ -296,11 +296,13 @@ def get_gateway_socket(gateway):
                                  error_str(NATPMP_GATEWAY_NO_VALID_GATEWAY))
     response_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     response_socket.setblocking(0)
+    if interface is not None:
+        response_socket.setsockopt(socket.SOL_SOCKET, IN.SO_BINDTODEVICE, interface)
     response_socket.connect((gateway, NATPMP_PORT))
     return response_socket
 
 
-def get_public_address(gateway_ip=None, retry=9):
+def get_public_address(interface=None, gateway_ip=None, retry=9):
     """A high-level function that returns the public interface IP of
        the current host by querying the NAT-PMP gateway.  IP is
        returned as string.
@@ -315,7 +317,7 @@ def get_public_address(gateway_ip=None, retry=9):
     if gateway_ip is None:
         gateway_ip = get_gateway_addr()
     addr_request = PublicAddressRequest()
-    addr_response = send_request_with_retry(gateway_ip, addr_request,
+    addr_response = send_request_with_retry(interface, gateway_ip, addr_request,
                                             response_data_class=
                                             PublicAddressResponse,
                                             retry=retry, response_size=12)
@@ -376,7 +378,7 @@ def map_udp_port(public_port, private_port, lifetime=3600, gateway_ip=None,
                     use_exception=use_exception)
 
 
-def map_port(protocol, public_port, private_port, lifetime=3600,
+def map_port(protocol, public_port, private_port, lifetime=3600, interface=None,
              gateway_ip=None, retry=9, use_exception=True):
     """A function to map public_port to private_port of protocol.
        Returns the complete response on success.
@@ -403,7 +405,7 @@ def map_port(protocol, public_port, private_port, lifetime=3600,
     port_mapping_request = PortMapRequest(protocol, private_port,
                                           public_port, lifetime)
     port_mapping_response = \
-        send_request_with_retry(gateway_ip, port_mapping_request,
+        send_request_with_retry(interface, gateway_ip, port_mapping_request,
                                 response_data_class=PortMapResponse,
                                 retry=retry)
     if port_mapping_response.result != 0 and use_exception:
@@ -430,9 +432,9 @@ def read_response(gateway_socket, timeout, response_size=16):
     return data, source_addr
 
 
-def send_request_with_retry(gateway_ip, request, response_data_class=None,
+def send_request_with_retry(interface, gateway_ip, request, response_data_class=None,
                             retry=9, response_size=16):
-    gateway_socket = get_gateway_socket(gateway_ip)
+    gateway_socket = get_gateway_socket(interface, gateway_ip)
     n = 1
     timeout = request.initial_timeout
     data = ""

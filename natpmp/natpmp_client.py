@@ -11,7 +11,7 @@ except ImportError:
 
 def main():
     if len(sys.argv) < 3:
-        print("usage: natpmp-client.py [-u] [-l lifetime] [-g gateway_addr] public_port private_port")
+        print("usage: natpmp-client.py [-u] [-l lifetime] [-g gateway_addr] [-i interface] public_port private_port")
         sys.exit(-1)
 
     opts, args = getopt.getopt(sys.argv[1:], "ul:g:")    
@@ -20,7 +20,8 @@ def main():
     protocol = NATPMP.NATPMP_PROTOCOL_TCP
     lifetime = 3600
     gateway = None
-    
+    interface = None
+
     for opt in opts:
         name, val = opt
         if name == "-u":
@@ -29,10 +30,12 @@ def main():
             lifetime = int(val)
         elif name == "-g":
             gateway = val
+        elif name == "-i"
+            interface = val
 
     if not gateway:
         gateway = NATPMP.get_gateway_addr()
-    print(NATPMP.map_port(protocol, public_port, private_port, lifetime, gateway_ip=gateway))
+    print(NATPMP.map_port(protocol, public_port, private_port, lifetime, interface=interface, gateway_ip=gateway))
 
 if __name__=="__main__":
     main()
