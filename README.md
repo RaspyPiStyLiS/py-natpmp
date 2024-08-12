@@ -7,7 +7,7 @@ In any case, this library puts a thin layer of Python abstraction over the NAT-P
 The library provides a set of high-level and low-level functions to interact via the NAT-PMP protocol. The functions map_port and get_public_address provide the two high-level functions offered by NAT-PMP. Responses are stored as Python objects.
 
 ## Client
-To use the client, grab it and the above library. Make sure you have the library in the same directory as the client script or otherwise on your Python instance’s sys.path. Invoke the client on the command-line (Terminal.app) as python natpmp-client.py [-u] [-l lifetime] [-g gateway_addr] public_port private_port.
+To use the client, grab it and the above library. Make sure you have the library in the same directory as the client script or otherwise on your Python instance’s sys.path. Invoke the client on the command-line (Terminal.app) as python natpmp-client.py [-u] [-l lifetime] [-i interface_name] [-g gateway_addr] public_port private_port.
 
 For example:
 
